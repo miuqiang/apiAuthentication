@@ -1,11 +1,11 @@
 const JWT = require('jsonwebtoken');
 const User = require('../models/users');
-const { JWT_SECRET } = require('../configuration')
+const { JWT_SECRET } = require('../configuration/index')
 
 signToken = user => {
   return JWT.sign({
     iss: 'CodeWorker',
-    sub:user.id,
+    sub: user.id,
     iat: new Date().getTime(),
     exp: new Date().setDate(new Date().getDate() + 1)// current time + 1 day ahead
   }, JWT_SECRET)
