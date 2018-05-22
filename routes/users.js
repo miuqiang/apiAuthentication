@@ -2,7 +2,7 @@ const express = require('express');
 const router = require('express-promise-router')();
 const passport = require('passport');
 const passportConf = require('../passport');
-
+const { checkLogin } = require('../common');
 const { validateBody, schemas } = require('../helpers/routeHelpers');
 const UsersController = require('../controllers/users');
 
@@ -17,6 +17,9 @@ router.route('/signin')
   .post(validateBody(schemas.authSchema) , passportSignIn , UsersController.signIn);
 
 router.route('/secret')
-  .get(passportJWT, UsersController.secret);
+  .get(checkLogin, UsersController.secret);
+
+router.route('/getuser')
+  .get(checkLogin, UsersController.getUsers);
 
 module.exports = router;

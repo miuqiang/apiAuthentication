@@ -9,6 +9,10 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  createtime: {
+    type: String,
+    default: Date.now
   }
 });
 
@@ -24,7 +28,7 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-userSchema.methods.isValidPassword = async function(newPassword) {
+userSchema.methods.isValidPassword = async function (newPassword) {
   try {
     return await bcrypt.compare(newPassword, this.password);
   } catch (error) {

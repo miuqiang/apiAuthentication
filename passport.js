@@ -16,13 +16,13 @@ passport.use(new JwtStrategy({
 
     // If user doesn't exists, handle it
     if (!user) {
-      return done(null, false);
+      return done(null, false, { message: 'Incorrect username.' });
     }
     // Otherwise, return the user
-    done(null, user);
+    done(null, user, { message: 'Incorrect username.' });
 
   } catch (error) {
-    done(error, false);
+    done(error, false, { message: 'Incorrect username.' });
   }
 }))
 
@@ -35,7 +35,7 @@ passport.use(new LocalStrategy({
     const user = await User.findOne({ email });
 
     if (!user) {
-      return done(null, false);
+      return done(null, false, { message: 'Incorrect username.' });
     }
 
     const isMathch = await user.isValidPassword(password);
