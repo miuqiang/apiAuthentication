@@ -1,5 +1,6 @@
 const JWT = require('jsonwebtoken');
 const User = require('../models/users');
+const validator = require('validator');
 const { JWT_SECRET } = require('../configuration/index')
 
 signToken = user => {
@@ -7,7 +8,8 @@ signToken = user => {
     iss: 'shunjiefw',
     sub: user.id,
     iat: new Date().getTime(),
-    exp: new Date().setDate(new Date().getDate() + 1)// current time + 1 day ahead
+    exp: new Date().getTime() + 1000*60*60*24*30,
+    // exp: new Date().setDate(new Date().getDate() + )// current time + 1 day ahead
   }, JWT_SECRET)
 }
 
@@ -17,15 +19,13 @@ module.exports = {
    */
   signUp: async (req, res, next) => {
     
-    const { email,password } = req.value.body;
+    const { email,password } = req.body;
     // check if there is a user in datebase
     const foundUser = await User.findOne({email: email});
     if (foundUser) {
-      return  res.status(200).json({
-        data:'',
-        code: 201,
-        msg: '用户名已经存在'
-      });
+      let err = new Error('用户名重复');
+      err.status = 400;
+      next(err);
     }
     // create a new user
     const newUser = new User({ email, password });
@@ -37,8 +37,6 @@ module.exports = {
     // Response with token
     res.status(200).json({ token: token });
 
-
-    // res.status(200).json({ user: newUser });
   },
 
   /**
